@@ -1,6 +1,7 @@
 def calculate_total(marks):
     return sum(marks)
 
+
 def calculate_grade(total):
     if total >= 90:
         return "A"
@@ -10,6 +11,7 @@ def calculate_grade(total):
         return "C"
     else:
         return "F"
+
 
 def check_result(total):
     return "PASS" if total >= 50 else "FAIL"

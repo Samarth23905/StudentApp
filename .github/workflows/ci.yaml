@@ -1,0 +1,14 @@
+- name: Install quality tools
+  run: python -m pip install ruff bandit
+
+- name: Run Ruff Linter
+  run: ruff check .
+
+- name: Check Code Formatting
+  run: ruff format --check .
+
+- name: Run Bandit Security Check
+  run: python -m bandit -r app.py
+
+- name: Run Unit Tests
+  run: python -m pytest -v

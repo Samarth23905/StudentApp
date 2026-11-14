@@ -1,14 +1,65 @@
-- name: Install quality tools
-  run: python -m pip install ruff bandit
+name: StudentApp CI Pipeline
 
-- name: Run Ruff Linter
-  run: ruff check .
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
-- name: Check Code Formatting
-  run: ruff format --check .
+permissions:
+  contents: read
 
-- name: Run Bandit Security Check
-  run: python -m bandit -r app.py
+jobs:
+  build-and-test:
+    name: Build, Test and Code Quality
+    runs-on: ubuntu-latest
 
-- name: Run Unit Tests
-  run: python -m pytest -v
+    steps:
+      # 1. Checkout repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Python
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # 3. Install project dependencies
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      # 4. Install quality tools
+      - name: Install Quality Tools
+        run: python -m pip install pytest ruff bandit
+
+      # 5. Build ZIP artifact
+      - name: Build StudentApp ZIP
+        run: |
+          python -m zipfile -c StudentApp.zip app.py test_app.py requirements.txt
+
+      # 6. Run Ruff Linter
+      - name: Run Ruff Linter
+        run: ruff check .
+
+      # 7. Check code formatting
+      - name: Check Code Formatting
+        run: ruff format --check .
+
+      # 8. Run Bandit security check
+      - name: Run Bandit Security Check
+        run: python -m bandit -r app.py
+
+      # 9. Run unit tests
+      - name: Run Unit Tests
+        run: python -m pytest -v
+
+      # 10. Upload build artifact
+      - name: Upload StudentApp Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: StudentApp-Build
+          path: StudentApp.zip
+          retention-days: 7
